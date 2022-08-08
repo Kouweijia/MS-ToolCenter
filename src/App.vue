@@ -44,7 +44,7 @@ export default {
 }
 span {
   line-height: 100%;
-  font-size: 50px;
+  /* font-size: 50px; */
   float: left;
 }
 

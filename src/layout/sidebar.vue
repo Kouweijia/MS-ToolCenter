@@ -2,10 +2,23 @@
   <div>
     <el-col>
       <el-row :gutter="20">
-        <el-col :span="22"
+        <el-col :span="14"
           ><el-input placeholder="Tools Filter" v-model="filterText">
-          </el-input> </el-col
-      ></el-row>
+          </el-input>
+        </el-col>
+        <!-- datasource -->
+        <el-col :span="8">
+          <el-select v-model="value" placeholder="Data" @change="change">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-col>
+      </el-row>
       <div class="tree">
         <el-row :gutter="20"
           ><el-tree
@@ -14,7 +27,6 @@
             :props="defaultProps"
             :filter-node-method="filterNode"
             ref="tree"
-            @node-click="handleNodeClick"
           >
           </el-tree>
         </el-row>
@@ -24,12 +36,13 @@
 </template>
 
 <script>
-import { getAllData,getDetail } from "../api/api";
+import { getAllData, getDetail } from "../api/api";
 import eventBus from "../bus.js";
 export default {
   data() {
     return {
       filterText: "",
+      value: "",
       data1: [
         //test
         {
@@ -103,7 +116,7 @@ export default {
       tree1: [
         //测试
         {
-          label: "Tool",
+          label: "DataSource-2",
           children: [
             {
               label: "DS",
@@ -168,37 +181,59 @@ export default {
           ],
         },
       ],
+      options: [
+        {
+          value: "opt1",
+          label: "Tools",
+        },
+        {
+          value: "opt2",
+          label: "DataSource2",
+        },
+      ],
       data: [],
       defaultProps: {
         children: "children",
         label: "label",
       },
-      curPath : ''
+      curPath: "",
     };
   },
-  mounted() {
-    getAllData().then((res) => {
-      this.data.push(res.data);
-      // console.log(data);
-    });
-  },
+  mounted() {},
   watch: {
     filterText(val) {
       this.$refs.tree.filter(val);
     },
+    // value(val){
+    //   console.log('val',val)
+    // }
   },
   methods: {
+    change(data) {
+      if (data === "opt1") {
+        // getAllData().then((res) => {
+        //   this.data.push(res.data);
+        //   // console.log(data);
+        // });
+        this.data = this.data1
+        console.log("111",this.data);
+      }
+      if (data === "opt2") {
+        this.data = this.tree1
+        console.log("222",this.data);
+      }
+    },
     filterNode(value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
 
     handleNodeClick(data) {
-      console.log('clickData',data);
-      this.curPath = data.current_path
-      getDetail(this.curPath).then((res2)=>{
+      console.log("clickData", data);
+      this.curPath = data.current_path;
+      getDetail(this.curPath).then((res2) => {
         eventBus.$emit("getContent", res2.data);
-      })
+      });
       // eventBus.$emit("getContent", data.label);
     },
   },
@@ -209,8 +244,8 @@ export default {
 .tree {
   overflow-x: hidden;
   height: 500px;
- margin: 0;
- padding: 0;
+  margin: 0;
+  padding: 0;
 }
 /* .el-tree{
  display: inline-block;
