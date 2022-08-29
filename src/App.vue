@@ -6,7 +6,7 @@
       <el-container>
 
         <el-aside ><Sidebar /><Sidelist /></el-aside>
-        <el-main><Details /></el-main>
+        <el-main><Readme /></el-main>
         
       </el-container>
     </el-container>
@@ -17,13 +17,13 @@
 import Header from "./layout/header.vue";
 import Sidebar from "./layout/sidebar.vue";
 import Sidelist from "./layout/sidelist.vue";
-import Details from "./layout/details.vue";
+import Readme from "./layout/readme.vue";
 export default {
   name: "App",
   components: {
     Header,
     Sidebar,
-    Details,
+    Readme,
     Sidelist,
   },
 };

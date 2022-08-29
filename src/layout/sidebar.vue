@@ -3,7 +3,7 @@
     <el-col>
       <el-row :gutter="20">
         <el-col :span="14"
-          ><el-input placeholder="Tools Filter" v-model="filterText">
+          ><el-input placeholder="Tools Filter" v-model="filterText" prefix-icon="el-icon-set-up">
           </el-input>
         </el-col>
         <!-- datasource -->
@@ -26,6 +26,7 @@
             :data="data"
             :props="defaultProps"
             :filter-node-method="filterNode"
+            @node-click="handleNodeClick"
             ref="tree"
           >
           </el-tree>
@@ -36,7 +37,7 @@
 </template>
 
 <script>
-import { getAllData, getDetail } from "../api/api";
+import { getAllData, getDetail, readme } from "../api/api";
 import eventBus from "../bus.js";
 export default {
   data() {
@@ -197,6 +198,7 @@ export default {
         label: "label",
       },
       curPath: "",
+      toolName:""
     };
   },
   mounted() {},
@@ -211,14 +213,16 @@ export default {
   methods: {
     change(data) {
       if (data === "opt1") {
-        // getAllData().then((res) => {
-        //   this.data.push(res.data);
-        //   // console.log(data);
-        // });
-        this.data = this.data1
+        this.data =[]
+        getAllData().then((res) => {
+          this.data.push(res.data);
+          // console.log(data);
+        });
+        // this.data = this.data1
         console.log("111",this.data);
       }
       if (data === "opt2") {
+        this.data =[]
         this.data = this.tree1
         console.log("222",this.data);
       }
@@ -229,11 +233,17 @@ export default {
     },
 
     handleNodeClick(data) {
-      console.log("clickData", data);
+      console.log("clickData", data.label);
       this.curPath = data.current_path;
-      getDetail(this.curPath).then((res2) => {
-        eventBus.$emit("getContent", res2.data);
-      });
+      this.toolName = data.label
+      readme(this.toolName).then((res)=>{
+        console.log('toolName', res.data)
+        eventBus.$emit("getReadme", res.data)
+      })
+      // getDetail(this.curPath).then((res2) => {
+      //   console.log('res2',res2)
+      //   eventBus.$emit("getContent", res2.data);
+      // });
       // eventBus.$emit("getContent", data.label);
     },
   },
