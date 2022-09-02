@@ -3,7 +3,11 @@
     <el-col>
       <el-row :gutter="20">
         <el-col :span="14"
-          ><el-input placeholder="Tools Filter" v-model="filterText" prefix-icon="el-icon-set-up">
+          ><el-input
+            placeholder="Tools Filter"
+            v-model="filterText"
+            prefix-icon="el-icon-set-up"
+          >
           </el-input>
         </el-col>
         <!-- datasource -->
@@ -21,7 +25,10 @@
       </el-row>
       <div class="tree">
         <el-row :gutter="20"
-          ><el-tree
+          >
+          <el-skeleton :rows="8" animated v-if="this.treeLoading == true" />
+          <el-tree
+          v-else-if="this.treeLoading == false"
             class="filter-tree"
             :data="data"
             :props="defaultProps"
@@ -32,6 +39,7 @@
           </el-tree>
         </el-row>
       </div>
+       <!-- <el-skeleton :rows="15" animated v-if="this.treeLoading == true" /> -->
     </el-col>
   </div>
 </template>
@@ -185,11 +193,11 @@ export default {
       options: [
         {
           value: "opt1",
-          label: "Tools",
+          label: "TestSource",
         },
         {
           value: "opt2",
-          label: "DataSource2",
+          label: "Tools",
         },
       ],
       data: [],
@@ -198,10 +206,13 @@ export default {
         label: "label",
       },
       curPath: "",
-      toolName:""
+      toolName: "",
+      treeLoading:false
     };
   },
-  mounted() {},
+  mounted() {
+    
+  },
   watch: {
     filterText(val) {
       this.$refs.tree.filter(val);
@@ -212,19 +223,29 @@ export default {
   },
   methods: {
     change(data) {
+      this.treeLoading=true
       if (data === "opt1") {
-        this.data =[]
+        this.data = [];
+        // eventBus.$emit("getDataSource", "opt1");
+        // getAllData().then((res) => {
+        //   this.data.push(res.data);
+        //   // console.log(data);
+        // });
+        this.data = this.data1
+        this.treeLoading = false
+        console.log("111", this.data);
+      }
+      if (data === "opt2") {
+        this.data = [];
+        eventBus.$emit("getDataSource", "opt2");
         getAllData().then((res) => {
+          if(res){
+            this.treeLoading = false
+          }
           this.data.push(res.data);
           // console.log(data);
         });
-        // this.data = this.data1
-        console.log("111",this.data);
-      }
-      if (data === "opt2") {
-        this.data =[]
-        this.data = this.tree1
-        console.log("222",this.data);
+        console.log("222", this.data);
       }
     },
     filterNode(value, data) {
@@ -233,13 +254,14 @@ export default {
     },
 
     handleNodeClick(data) {
+      eventBus.$emit("isloading", true);
       console.log("clickData", data.label);
       this.curPath = data.current_path;
-      this.toolName = data.label
-      readme(this.toolName).then((res)=>{
-        console.log('toolName', res.data)
-        eventBus.$emit("getReadme", res.data)
-      })
+      this.toolName = data.label;
+      readme(this.toolName).then((res) => {
+        console.log("toolName", res.data);
+        eventBus.$emit("getReadme", res.data);
+      });
       // getDetail(this.curPath).then((res2) => {
       //   console.log('res2',res2)
       //   eventBus.$emit("getContent", res2.data);
@@ -253,9 +275,11 @@ export default {
 <style>
 .tree {
   overflow-x: hidden;
-  height: 500px;
+  /* height: 500px;  */
   margin: 0;
   padding: 0;
+  overflow: auto;
+  height: 80vh;
 }
 /* .el-tree{
  display: inline-block;
@@ -273,6 +297,6 @@ export default {
   margin-top: 10px;
 }
 .tree {
-  height: 300px;
+  height: 500px;
 }
 </style>

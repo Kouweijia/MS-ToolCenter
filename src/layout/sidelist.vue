@@ -12,12 +12,16 @@
           >
           </el-input> </el-col
       ></el-row>
-      <div class="tree">
-        <ul class="box-card" v-for="p in tableData" :key="p">
+      <div class="Senario">
+        <div class="list" v-for="p in tableData" :key="p">
           <div @click="info(p)">
-            <el-link>{{ p }}</el-link>
+            <!-- <el-link>{{ p }}</el-link> -->
+            <el-tag class="tag"
+            >
+              {{ p }}
+            </el-tag>
           </div>
-        </ul>
+      </div>
       </div>
     </el-col>
   </div>
@@ -40,8 +44,8 @@ export default {
     };
   },
   mounted() {
-   eventBus.$on("tagSelect", this.tagReceived);
-    console.log('t3',t)
+    eventBus.$on("tagSelect", this.tagReceived);
+    console.log("t3", t);
   },
   // watch() {
   //    eventBus.$on("tagSelect", (t) => {
@@ -59,18 +63,17 @@ export default {
     },
 
     info(data) {
+      eventBus.$emit("isloading", true);
       readme(data).then((res) => {
         console.log("toolName", res.data);
         eventBus.$emit("getReadme", res.data);
       });
     },
-    tagReceived(t){
-      console.log('ttt',t)
-      this.filterText = t
-      this.search()
+    tagReceived(t) {
+      console.log("ttt", t);
+      this.filterText = t;
+      this.search();
     },
-
-    
   },
 };
 </script>
@@ -84,7 +87,23 @@ export default {
   margin-bottom: 6px;
   margin-top: 10px;
 }
-.tree {
-  height: 300px;
+.Senario {
+  height: 20%;
+  overflow: auto;
+}
+.list {
+  margin: 0;
+  padding: 0;
+  margin-top: 20px;
+  /* border-top-style: dotted;
+  border-right-style: solid;
+  border-bottom-style: dotted;
+  border-left-style: solid; */
+  width: 90%;
+  cursor:pointer
+}
+.tag{
+  margin: 4px;
+  /* hover:pointer */
 }
 </style>

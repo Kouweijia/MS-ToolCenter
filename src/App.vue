@@ -6,8 +6,8 @@
       <el-container>
 
         <el-aside ><Sidebar /><Sidelist /></el-aside>
-        <el-main><Readme /></el-main>
-        
+        <el-main ><Readme /></el-main>
+        <!-- <el-aside ><Sidelist /></el-aside> -->
       </el-container>
     </el-container>
   </div>
@@ -62,6 +62,7 @@ span {
   margin-top: 20px;
   margin-left: 30px;
   overflow: hidden;
+  /* width: 400px; */
 }
 
 .el-main {

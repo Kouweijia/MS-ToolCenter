@@ -1,6 +1,14 @@
 <template>
   <div class="box-readme">
-    <el-card class="box-card" v-for="p in readme" :key="p">
+    <!-- <div v-if="this.isLoading==true"> -->
+    <el-skeleton :rows="15" animated v-if="this.isLoading == true" />
+    <!-- </div> -->
+    <el-card
+      class="box-card"
+      v-for="p in readme"
+      :key="p"
+      v-else-if="this.isLoading == false"
+    >
       <div slot="header" class="clearfix">
         <b> {{ p.meta_name }}</b>
       </div>
@@ -27,22 +35,6 @@
         <!-- {{ p.content }} -->
       </div>
     </el-card>
-    <!-- <el-card class="box-card">
-        <ul v-for="p in readme" :key="p">
-
-          <el-card class="box-card">
-            {{ p.meta_name }}： {{ p.content }}
-          </el-card>
-        </ul>
-      </el-card> -->
-
-    <!-- <el-card class="box-card">
-        <h3>{{ "Link " }}</h3>
-        <li v-for="(p, index) in msg" :key="p" v-on:click="download(index)">
-
-          {{ p }}
-        </li>
-      </el-card> -->
   </div>
 </template>
 
@@ -62,11 +54,19 @@ export default {
       lis: [],
       path: "",
       url: "",
+      isLoading: false,
     };
   },
   created() {
     this.getContent();
   },
+  // beforeUpdate() {
+  //   this.isLoading = true;
+  // },
+  // updated() {
+  //   this.isLoading = false;
+  // },
+  mounted() {},
   methods: {
     getContent() {
       //子组件B通过eventBus.$on注册自定义事件接收子组件A的传值
@@ -76,8 +76,16 @@ export default {
       //   this.path= data.current_path
       //   console.log("传过来的", data);
       // });
+      // this.isLoading = true
+      eventBus.$on("isloading", (data)=>{
+        this.isLoading = data
+      });
       eventBus.$on("getReadme", (data) => {
         console.log("resss", data);
+        if (data) {
+          this.isLoading = false;
+        }
+
         this.readme = data;
         data.map((r) => {
           if (r.meta_name == "Scenarios Tag") {
@@ -156,7 +164,7 @@ export default {
   font-size: 20px;
 }
 .box-card {
-  width: 70%;
+  width: 96%;
   margin-bottom: 20px;
 }
 .links {
