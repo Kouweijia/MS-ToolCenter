@@ -9,7 +9,7 @@ var str = '\\\\SHA-FS-01A\\WinComm-ADOS\\Readiness\\Team\\Tool'
 //     if(data == "opt1"){
 //         str = '\\\\wuxcssfs\\cts\\EPS\\Team\\Tool'
 //     }else if(data == "opt2"){
-//         str = '\\\\SHA-FS-01A\\WinComm-ADOS\\Readiness\\Team\\Tool'
+//         str = '\\SHA-FS-01A\WinComm-ADOS\Readiness\Team\Tool'
 //     }
 // });
 var tagmapping = str+'\\tagmapping.xlsx'
@@ -29,6 +29,7 @@ const getAllData = params => {
 const getDetail = path => {
     // console.log(`http://10.168.174.68:5000/tools/${path}?data-src=${result}`);
     return axios.get(`http://10.168.174.68:5000/files/${path}`,{ params: {'data-src':str}})
+
 }
 
 const readme = toolName =>{
@@ -38,8 +39,12 @@ const senarioSearch = senario =>{
     return axios.get(`http://10.168.174.68:5000/tools/scenario/search`,{ params:{'keywords':senario,'data-src':tagmapping}})
 }
 const download = path => {
-    console.log(`http://10.168.174.68:5000/tools/${path}?data-src=${result}`);
-    eventBus.$emit("download", `http://10.168.174.68:5000/tools/${path}?data-src=${result}`);
+    // console.log(`http://10.168.174.68:5000/tools/${path}?data-src=${result}`);
+    // return axios.get(`http://10.168.174.68:5000/files/${path}`,{ params: {'data-src':str}})
+    eventBus.$emit("download", `http://10.168.174.68:5000/files/${path}?data-src=${str}`);
+    // eventBus.$emit("download", axios.get(`http://10.168.174.68:5000/files/${path}`,{ params: {'data-src':str}}));
+    // return axios.get(`http://10.168.174.68:5000/files/${path}`,{ params: {'data-src':str}})
+    
 }
 export{
     getAllData,

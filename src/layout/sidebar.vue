@@ -262,10 +262,10 @@ export default {
         console.log("toolName", res.data);
         eventBus.$emit("getReadme", res.data);
       });
-      // getDetail(this.curPath).then((res2) => {
-      //   console.log('res2',res2)
-      //   eventBus.$emit("getContent", res2.data);
-      // });
+      getDetail(this.curPath).then((res2) => {
+        console.log('res2',res2)
+        eventBus.$emit("getContent", res2.data);
+      });
       // eventBus.$emit("getContent", data.label);
     },
   },

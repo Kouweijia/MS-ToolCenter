@@ -3,10 +3,11 @@
     <!-- <div v-if="this.isLoading==true"> -->
     <el-skeleton :rows="15" animated v-if="this.isLoading == true" />
     <!-- </div> -->
+
     <el-card
       class="box-card"
       v-for="p in readme"
-      :key="p"
+      :key="p + 0"
       v-else-if="this.isLoading == false"
     >
       <div slot="header" class="clearfix">
@@ -31,16 +32,26 @@
         <div v-else @click="info(p)">
           {{ p.content }}
         </div>
-
         <!-- {{ p.content }} -->
       </div>
     </el-card>
+    <el-card class="box-card" v-if="this.files != ''">
+          <div slot="header" class="clearfix">
+            <b> Download</b>
+          </div>
+          <div v-for="f in files" :key="f" class="links">
+            <div @click="clickdownload(f)">
+              <el-link>{{ f }}</el-link>
+            </div>
+          </div>
+        </el-card>
   </div>
 </template>
 
 <script>
 import { download } from "../api/api";
 import eventBus from "../bus.js";
+import axios from "axios";
 export default {
   name: "details",
   data() {
@@ -49,12 +60,14 @@ export default {
       Stag: [],
       Nlink: [],
       jumpTo: "",
-      msg: "",
+      files: "",
       dataobj: "",
       lis: [],
       path: "",
       url: "",
       isLoading: false,
+      str: "\\\\SHA-FS-01A\\WinComm-ADOS\\Readiness\\Team\\Tool",
+      downloadlink: "",
     };
   },
   created() {
@@ -70,15 +83,17 @@ export default {
   methods: {
     getContent() {
       //子组件B通过eventBus.$on注册自定义事件接收子组件A的传值
-      // eventBus.$on("getContent", (data) => {
-      //   this.msg = data.sub_files;
-      //   this.dataobj = data
-      //   this.path= data.current_path
-      //   console.log("传过来的", data);
-      // });
+      eventBus.$on("getContent", (data) => {
+        // this.files = ''
+        this.files = data.sub_files;
+        // .replace(/\//g, "\\")
+        // this.dataobj = data
+        this.path = data.current_path;
+        console.log("传过来的", data);
+      });
       // this.isLoading = true
-      eventBus.$on("isloading", (data)=>{
-        this.isLoading = data
+      eventBus.$on("isloading", (data) => {
+        this.isLoading = data;
       });
       eventBus.$on("getReadme", (data) => {
         console.log("resss", data);
@@ -98,17 +113,42 @@ export default {
         // console.log("tag", this.tag);
       });
     },
-    download(p) {
+    clickdownload(p) {
       // if(this.msg[p])
+      this.url = this.path + "\\" + p;
+      download(this.url);
 
-      download(this.path + "/" + this.msg[p]);
+      // this.downloadlink = 'http://10.168.174.68:5000/tools/'+this.url+'?data-src='+this.str
+      // console.log('this.downloadlink',this.downloadlink)
+      // let link = document.createElement("a");
+      // link.href = this.downloadlink;
+      // document.body.appendChild(link);
+      // link.click();
       eventBus.$on("download", (url) => {
+        // console.log("99", url);
         this.url = url;
         let link = document.createElement("a");
         link.href = url;
         document.body.appendChild(link);
         link.click();
       });
+
+      // download().then((url) => {
+      // let blob = new Blob([res])
+
+      // console.log("uuuuuuurl",url);
+      // let link = document.createElement("a");
+      // link.href = url;
+      // document.body.appendChild(link);
+      // link.click();
+      // });
+      // eventBus.$on("download", (url) => {
+      // this.url = url;
+      // let link = document.createElement("a");
+      // link.href = url;
+      // document.body.appendChild(link);
+      // link.click();
+      // });
       // .then((res)=>{
 
       // this.url=request.getRequestURL()
